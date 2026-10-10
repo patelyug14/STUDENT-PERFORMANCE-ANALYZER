@@ -1,1054 +1,323 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Student Performance Analyzer</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- ================= HEADER ================= -->
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">🎓</div>
+        <div>
+            <h1>Student Performance Analyzer</h1>
+            <p>Academic Performance Dashboard</p>
+        </div>
+    </div>
+    <div class="status">
+        <span class="status-dot"></span>
+        <span id="message">Connecting...</span>
+    </div>
+</header>
 
-    <header class="topbar">
+<nav class="division-menu">
+    <span class="menu-label">Class Division</span>
+    <button class="division active" onclick="changeDivision('All', this)">All Divisions</button>
+    <button class="division" onclick="changeDivision('A', this)">Division A</button>
+    <button class="division" onclick="changeDivision('B', this)">Division B</button>
+    <button class="division" onclick="changeDivision('C', this)">Division C</button>
+    <button class="division" onclick="changeDivision('D', this)">Division D</button>
+    <button class="division" onclick="changeDivision('E', this)">Division E</button>
+</nav>
 
-        <div class="brand">
+<main>
 
-            <div class="brand-icon">
-                🎓
-            </div>
-
-            <div>
-                <h1>Student Performance Analyzer</h1>
-                <p>Academic Performance Dashboard</p>
-            </div>
-
+    <section class="division-heading">
+        <div>
+            <span class="muted-label">Currently Viewing</span>
+            <h2>🏆 <span id="divisionTitle">All Divisions</span></h2>
         </div>
 
-
-        <div class="status">
-
-            <span class="status-dot"></span>
-
-            <span id="message">
-                Connecting...
-            </span>
-
+        <div class="student-count">
+            <strong id="divisionCount">0</strong>
+            <small>Students</small>
         </div>
 
-    </header>
+        <div class="analysis-title">
+            <strong>Performance Overview</strong>
+            <small>Marks, grades and results</small>
+        </div>
+    </section>
 
+    <section class="cards">
+        <div class="card average-card">
+            <h3>Class Average</h3>
+            <h2 id="average">0%</h2>
+            <p id="averageDetail">0 students</p>
+            <div class="hover-info" id="averageInfo"></div>
+        </div>
 
-    <!-- ================= DIVISION MENU ================= -->
+        <div class="card best-card">
+            <h3>Best Student</h3>
+            <h2 id="highest">0%</h2>
+            <p id="highestDetail">No data</p>
+            <div class="hover-info" id="highestInfo"></div>
+        </div>
 
-    <nav class="division-menu">
+        <div class="card lowest-card">
+            <h3>Lowest Student</h3>
+            <h2 id="lowest">0%</h2>
+            <p id="lowestDetail">No data</p>
+            <div class="hover-info" id="lowestInfo"></div>
+        </div>
 
-        <span class="menu-label">
-            Class Division
-        </span>
+        <div class="card pass-card">
+            <h3>Pass Percentage</h3>
+            <h2 id="pass">0%</h2>
+            <p id="passDetail">0 passed</p>
+            <div class="hover-info" id="passInfo"></div>
+        </div>
 
+        <div class="card failed-card">
+            <h3>Failed Students</h3>
+            <h2 id="failed">0</h2>
+            <p id="failedDetail">Below 50% average</p>
+            <div class="hover-info" id="failedInfo"></div>
+        </div>
+    </section>
 
-        <button
-            class="division active"
-            onclick="changeDivision('All', this)">
-            👥 All
-        </button>
+    <section class="section-heading">
+        <h2>Performance Graphs</h2>
+        <p>Graphs for <span id="graphDivision">All Divisions</span></p>
+    </section>
 
+    <section class="graphs">
 
-        <button
-            class="division div-a"
-            onclick="changeDivision('A', this)">
-            A
-        </button>
-
-
-        <button
-            class="division div-b"
-            onclick="changeDivision('B', this)">
-            B
-        </button>
-
-
-        <button
-            class="division div-c"
-            onclick="changeDivision('C', this)">
-            C
-        </button>
-
-
-        <button
-            class="division div-d"
-            onclick="changeDivision('D', this)">
-            D
-        </button>
-
-
-        <button
-            class="division div-e"
-            onclick="changeDivision('E', this)">
-            E
-        </button>
-
-    </nav>
-
-
-    <main>
-
-
-        <!-- ================= CURRENT DIVISION ================= -->
-
-        <section class="division-heading">
-
-            <div>
-
-                <span class="muted-label">
-                    Currently Viewing
-                </span>
-
-                <h2>
-                    🏆
-                    <span id="divisionTitle">
-                        All Divisions
-                    </span>
-                </h2>
-
+        <div class="box chart-box">
+            <div class="box-title">
+                <div>
+                    <h3>📊 Subject Average</h3>
+                    <p>Average marks in each subject</p>
+                </div>
+                <span class="chart-tag orange">Bar Chart</span>
             </div>
 
-
-            <div class="student-count">
-
-                <strong id="divisionCount">
-                    0
-                </strong>
-
-                <small>
-                    Students
-                </small>
-
+            <div class="chart-legend">
+                <span><i class="math-color"></i> Maths</span>
+                <span><i class="science-color"></i> Science</span>
+                <span><i class="english-color"></i> English</span>
+                <span><i class="pass-color"></i> Pass: 50</span>
             </div>
 
+            <div class="chart-area">
+                <canvas id="subjectGraph"></canvas>
+                <div class="chart-tooltip" id="chartTooltip"></div>
+            </div>
+            <p class="chart-note" id="subjectNote">Hover over a bar for details.</p>
+        </div>
 
-            <div class="analysis-title">
-
-                <strong>
-                    Performance Overview
-                </strong>
-
-                <small>
-                    Marks, grades and result details
-                </small>
-
+        <div class="box chart-box">
+            <div class="box-title">
+                <div>
+                    <h3>📈 Student Performance</h3>
+                    <p>Average percentage of students</p>
+                </div>
+                <span class="chart-tag purple">Line Chart</span>
             </div>
 
-        </section>
-
-
-
-        <!-- ================= DASHBOARD CARDS ================= -->
-
-        <section class="cards">
-
-
-            <!-- Average -->
-
-            <div class="card average-card">
-
-                <div class="card-top">
-
-                    <span class="card-icon">
-                        AVG
-                    </span>
-
-                    <span>
-                        Average
-                    </span>
-
-                </div>
-
-
-                <h3>
-                    Class Average
-                </h3>
-
-                <h2 id="average">
-                    0%
-                </h2>
-
-                <p id="averageDetail">
-                    0 students
-                </p>
-
-
-                <div
-                    class="hover-info"
-                    id="averageInfo">
-                </div>
-
+            <div class="chart-legend">
+                <span><i class="student-color"></i> Average</span>
+                <span><i class="pass-color"></i> Pass: 50</span>
+                <span><i class="fail-dot"></i> Failed</span>
             </div>
 
+            <div class="chart-area">
+                <canvas id="studentGraph"></canvas>
+                <div class="chart-tooltip" id="studentTooltip"></div>
+            </div>
+            <p class="chart-note">Hover over a point for student details.</p>
+        </div>
 
-
-            <!-- Best -->
-
-            <div class="card best-card">
-
-                <div class="card-top">
-
-                    <span class="card-icon">
-                        ★
-                    </span>
-
-                    <span>
-                        Top
-                    </span>
-
+        <div class="box chart-box failed-box">
+            <div class="box-title">
+                <div>
+                    <h3>⚠️ Failed Students</h3>
+                    <p>Students with an average below 50%</p>
                 </div>
-
-
-                <h3>
-                    Best Student
-                </h3>
-
-                <h2 id="highest">
-                    0%
-                </h2>
-
-                <p id="highestDetail">
-                    No data
-                </p>
-
-
-                <div
-                    class="hover-info"
-                    id="highestInfo">
-                </div>
-
+                <span class="chart-tag red">Lollipop Chart</span>
             </div>
 
-
-
-            <!-- Lowest -->
-
-            <div class="card lowest-card">
-
-                <div class="card-top">
-
-                    <span class="card-icon">
-                        LOW
-                    </span>
-
-                    <span>
-                        Lowest
-                    </span>
-
-                </div>
-
-
-                <h3>
-                    Lowest Student
-                </h3>
-
-                <h2 id="lowest">
-                    0%
-                </h2>
-
-                <p id="lowestDetail">
-                    No data
-                </p>
-
-
-                <div
-                    class="hover-info"
-                    id="lowestInfo">
-                </div>
-
+            <div class="chart-legend">
+                <span><i class="fail-dot"></i> Failed student</span>
+                <span>Marks shown as percentages</span>
             </div>
 
-
-
-            <!-- Pass -->
-
-            <div class="card pass-card">
-
-                <div class="card-top">
-
-                    <span class="card-icon">
-                        ✓
-                    </span>
-
-                    <span>
-                        Result
-                    </span>
-
-                </div>
-
-
-                <h3>
-                    Pass Percentage
-                </h3>
-
-                <h2 id="pass">
-                    0%
-                </h2>
-
-                <p id="passDetail">
-                    0 passed
-                </p>
-
-
-                <div
-                    class="hover-info"
-                    id="passInfo">
-                </div>
-
+            <div class="chart-area">
+                <canvas id="failedGraph"></canvas>
+                <div class="chart-tooltip" id="failedTooltip"></div>
             </div>
-
-
-
-            <!-- Failed -->
-
-            <div class="card failed-card">
-
-                <div class="card-top">
-
-                    <span class="card-icon">
-                        !
-                    </span>
-
-                    <span>
-                        Attention
-                    </span>
-
-                </div>
-
-
-                <h3>
-                    Failed Students
-                </h3>
-
-                <h2 id="failed">
-                    0
-                </h2>
-
-                <p id="failedDetail">
-                    Below 50%
-                </p>
-
-
-                <div
-                    class="hover-info"
-                    id="failedInfo">
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= GRAPHS ================= -->
-
-        <section class="section-heading">
-
-            <h2>
-                Performance Graphs
-            </h2>
-
-            <p>
-                Graphs for
-                <span id="graphDivision">
-                    All Divisions
-                </span>
-            </p>
-
-        </section>
-
-
-
-        <section class="graphs">
-
-
-            <!-- SUBJECT BAR CHART -->
-
-            <div class="box chart-box">
-
-                <div class="box-title">
-
-                    <div>
-
-                        <h3>
-                            📊 Subject Average
-                        </h3>
-
-                        <p>
-                            Average marks of each subject
-                        </p>
-
-                    </div>
-
-
-                    <span class="chart-tag orange">
-                        Bar Chart
-                    </span>
-
-                </div>
-
-
-                <div class="chart-legend">
-
-                    <span>
-                        <i class="math-color"></i>
-                        Maths
-                    </span>
-
-                    <span>
-                        <i class="science-color"></i>
-                        Science
-                    </span>
-
-                    <span>
-                        <i class="english-color"></i>
-                        English
-                    </span>
-
-                    <span>
-                        <i class="pass-color"></i>
-                        Pass = 50
-                    </span>
-
-                </div>
-
-
-                <div class="chart-area">
-
-                    <canvas id="subjectGraph">
-                    </canvas>
-
-                </div>
-
-
-                <p
-                    class="chart-note"
-                    id="subjectNote">
-                    Hover over a bar for details.
-                </p>
-
-
-                <div
-                    class="chart-tooltip"
-                    id="chartTooltip">
-                </div>
-
-            </div>
-
-
-
-            <!-- STUDENT LINE CHART -->
-
-            <div class="box chart-box">
-
-                <div class="box-title">
-
-                    <div>
-
-                        <h3>
-                            📈 Student Performance
-                        </h3>
-
-                        <p>
-                            Average percentage of students
-                        </p>
-
-                    </div>
-
-
-                    <span class="chart-tag purple">
-                        Line Chart
-                    </span>
-
-                </div>
-
-
-                <div class="chart-legend">
-
-                    <span>
-                        <i class="student-color"></i>
-                        Student Average
-                    </span>
-
-                    <span>
-                        <i class="pass-color"></i>
-                        Pass = 50
-                    </span>
-
-                    <span>
-                        <i class="fail-dot"></i>
-                        Failed
-                    </span>
-
-                </div>
-
-
-                <div class="chart-area">
-
-                    <canvas id="studentGraph">
-                    </canvas>
-
-                </div>
-
-
-                <p class="chart-note">
-                    Roll numbers are shown below. Hover a point for details.
-                </p>
-
-
-                <div
-                    class="chart-tooltip"
-                    id="studentTooltip">
-                </div>
-
-            </div>
-
-
-
-            <!-- FAILED LOLLIPOP CHART -->
-
-            <div class="box chart-box failed-box">
-
-                <div class="box-title">
-
-                    <div>
-
-                        <h3>
-                            ⚠️ Failed Students
-                        </h3>
-
-                        <p>
-                            Students below 50% average
-                        </p>
-
-                    </div>
-
-
-                    <span class="chart-tag red">
-                        Lollipop Chart
-                    </span>
-
-                </div>
-
-
-                <div class="chart-legend">
-
-                    <span>
-                        <i class="fail-dot"></i>
-                        Failed Student
-                    </span>
-
-                    <span>
-                        Below 50% = Fail
-                    </span>
-
-                </div>
-
-
-                <div class="chart-area">
-
-                    <canvas id="failedGraph">
-                    </canvas>
-
-                </div>
-
-
-                <p
-                    class="chart-note"
-                    id="failedNote">
-                    No failed students.
-                </p>
-
-
-                <div
-                    class="chart-tooltip"
-                    id="failedTooltip">
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= ADD STUDENT ================= -->
-
-        <section class="section-heading">
-
-            <h2>
-                Add Student
-            </h2>
-
-            <p>
-                Add a new student to a division
-            </p>
-
-        </section>
-
-
-        <section class="box form">
-
-            <div class="input-group">
-
-                <label>
-                    Name
-                </label>
-
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="Student Name">
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label>
-                    Roll No
-                </label>
-
-                <input
-                    type="text"
-                    id="roll"
-                    placeholder="Roll No">
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label>
-                    Division
-                </label>
-
-                <select id="addDivision">
-
-                    <option value="A">
-                        Division A
-                    </option>
-
-                    <option value="B">
-                        Division B
-                    </option>
-
-                    <option value="C">
-                        Division C
-                    </option>
-
-                    <option value="D">
-                        Division D
-                    </option>
-
-                    <option value="E">
-                        Division E
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label>
-                    Maths
-                </label>
-
-                <input
-                    type="number"
-                    id="maths"
-                    min="0"
-                    max="100"
-                    placeholder="0 - 100">
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label>
-                    Science
-                </label>
-
-                <input
-                    type="number"
-                    id="science"
-                    min="0"
-                    max="100"
-                    placeholder="0 - 100">
-
-            </div>
-
-
-            <div class="input-group">
-
-                <label>
-                    English
-                </label>
-
-                <input
-                    type="number"
-                    id="english"
-                    min="0"
-                    max="100"
-                    placeholder="0 - 100">
-
-            </div>
-
-
-            <div class="form-buttons">
-
-                <button
-                    class="primary-btn"
-                    onclick="addStudent()">
-
-                    ＋ Add Student
-
-                </button>
-
-
-                <button
-                    class="clear"
-                    onclick="clearForm()">
-
-                    ↻ Clear
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ================= STUDENT RECORDS ================= -->
-
-        <section class="section-heading">
-
-            <h2>
-                Student Records
-            </h2>
-
-            <p>
-                Search and manage students in
-                <span id="tableDivision">
-                    All Divisions
-                </span>
-            </p>
-
-        </section>
-
-
-        <section class="box filters">
-
-            <input
-                type="text"
-                id="search"
-                placeholder="🔍 Search name or roll number...">
-
-
-            <select id="gradeFilter">
-
-                <option value="All">
-                    All Grades
-                </option>
-
-                <option value="A">
-                    Grade A
-                </option>
-
-                <option value="B">
-                    Grade B
-                </option>
-
-                <option value="C">
-                    Grade C
-                </option>
-
-                <option value="D">
-                    Grade D
-                </option>
-
-                <option value="F">
-                    Grade F
-                </option>
-
+            <p class="chart-note" id="failedNote">No failed students.</p>
+        </div>
+
+    </section>
+
+    <section class="section-heading">
+        <h2>Add Student</h2>
+        <p>Add a new student to a division.</p>
+    </section>
+
+    <section class="box form">
+        <div class="input-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Student name">
+        </div>
+
+        <div class="input-group">
+            <label for="roll">Roll No</label>
+            <input type="text" id="roll" placeholder="Roll number">
+        </div>
+
+        <div class="input-group">
+            <label for="addDivision">Division</label>
+            <select id="addDivision">
+                <option value="A">Division A</option>
+                <option value="B">Division B</option>
+                <option value="C">Division C</option>
+                <option value="D">Division D</option>
+                <option value="E">Division E</option>
             </select>
-
-
-            <button
-                class="refresh-btn"
-                onclick="loadData()">
-
-                ↻ Refresh
-
-            </button>
-
-        </section>
-
-
-
-        <section class="table-box">
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Name</th>
-
-                        <th>Roll No</th>
-
-                        <th>Division</th>
-
-                        <th>Maths</th>
-
-                        <th>Science</th>
-
-                        <th>English</th>
-
-                        <th>Percentage</th>
-
-                        <th>Grade</th>
-
-                        <th>Status</th>
-
-                        <th>Action</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody id="studentTable">
-                </tbody>
-
-            </table>
-
-        </section>
-
-
-
-        <!-- ================= UPDATE MODAL ================= -->
-
-        <div
-            class="modal-overlay"
-            id="updateModal">
-
-            <div class="update-modal">
-
-
-                <div class="modal-header">
-
-                    <div>
-
-                        <h2>
-                            ✏️ Update Student
-                        </h2>
-
-                        <p>
-                            Change student details and save.
-                        </p>
-
-                    </div>
-
-
-                    <button
-                        class="modal-close"
-                        onclick="closeUpdateModal()">
-
-                        ×
-
-                    </button>
-
-                </div>
-
-
-
-                <div class="update-form">
-
-
-                    <div class="input-group">
-
-                        <label>
-                            Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="editName">
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label>
-                            Roll No
-                        </label>
-
-                        <input
-                            type="text"
-                            id="editRoll">
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label>
-                            Division
-                        </label>
-
-                        <select id="editDivision">
-
-                            <option value="A">
-                                Division A
-                            </option>
-
-                            <option value="B">
-                                Division B
-                            </option>
-
-                            <option value="C">
-                                Division C
-                            </option>
-
-                            <option value="D">
-                                Division D
-                            </option>
-
-                            <option value="E">
-                                Division E
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label>
-                            Maths
-                        </label>
-
-                        <input
-                            type="number"
-                            id="editMaths"
-                            min="0"
-                            max="100">
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label>
-                            Science
-                        </label>
-
-                        <input
-                            type="number"
-                            id="editScience"
-                            min="0"
-                            max="100">
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label>
-                            English
-                        </label>
-
-                        <input
-                            type="number"
-                            id="editEnglish"
-                            min="0"
-                            max="100">
-
-                    </div>
-
-                </div>
-
-
-
-                <div class="update-preview">
-
-                    <span>
-                        Updated Result
-                    </span>
-
-                    <strong id="editResultPreview">
-                        0%
-                    </strong>
-
-                    <span
-                        id="editGradePreview"
-                        class="grade-preview">
-
-                        Grade F
-
-                    </span>
-
-                </div>
-
-
-
-                <div class="modal-actions">
-
-                    <button
-                        class="clear"
-                        onclick="closeUpdateModal()">
-
-                        Cancel
-
-                    </button>
-
-
-                    <button
-                        class="primary-btn"
-                        onclick="saveStudentUpdate()">
-
-                        ✓ Save Changes
-
-                    </button>
-
-                </div>
-
-            </div>
-
         </div>
 
-    </main>
+        <div class="input-group">
+            <label for="maths">Maths</label>
+            <input type="number" id="maths" min="0" max="100" placeholder="0 - 100">
+        </div>
 
+        <div class="input-group">
+            <label for="science">Science</label>
+            <input type="number" id="science" min="0" max="100" placeholder="0 - 100">
+        </div>
 
+        <div class="input-group">
+            <label for="english">English</label>
+            <input type="number" id="english" min="0" max="100" placeholder="0 - 100">
+        </div>
 
-    <!-- ================= SCRIPTS ================= -->
+        <div class="form-buttons">
+            <button class="primary-btn" onclick="addStudent()">+ Add Student</button>
+            <button class="clear" onclick="clearForm()">Clear</button>
+        </div>
+    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <section class="section-heading">
+        <h2>Student Records</h2>
+        <p>Search and manage students in <span id="tableDivision">All Divisions</span></p>
+    </section>
 
-    <script src="config.js">
-    </script>
+    <section class="box filters">
+        <input type="text" id="search" placeholder="Search name or roll number...">
 
-    <script src="script.js">
-    </script>
+        <select id="gradeFilter">
+            <option value="All">All Grades</option>
+            <option value="A">Grade A</option>
+            <option value="B">Grade B</option>
+            <option value="C">Grade C</option>
+            <option value="D">Grade D</option>
+            <option value="F">Grade F</option>
+        </select>
+
+        <button class="refresh-btn" onclick="loadData()">Refresh</button>
+    </section>
+
+    <section class="table-box">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Division</th>
+                    <th>Maths</th>
+                    <th>Science</th>
+                    <th>English</th>
+                    <th>Percentage</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="studentTable"></tbody>
+        </table>
+    </section>
+
+</main>
+
+<div class="modal-overlay" id="updateModal">
+    <div class="update-modal">
+        <div class="modal-header">
+            <div>
+                <h2>✏️ Update Student</h2>
+                <p>Edit the student details and save.</p>
+            </div>
+            <button class="modal-close" onclick="closeUpdateModal()">×</button>
+        </div>
+
+        <div class="update-form">
+            <div class="input-group">
+                <label for="editName">Name</label>
+                <input type="text" id="editName">
+            </div>
+
+            <div class="input-group">
+                <label for="editRoll">Roll No</label>
+                <input type="text" id="editRoll">
+            </div>
+
+            <div class="input-group">
+                <label for="editDivision">Division</label>
+                <select id="editDivision">
+                    <option value="A">Division A</option>
+                    <option value="B">Division B</option>
+                    <option value="C">Division C</option>
+                    <option value="D">Division D</option>
+                    <option value="E">Division E</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="editMaths">Maths</label>
+                <input type="number" id="editMaths" min="0" max="100">
+            </div>
+
+            <div class="input-group">
+                <label for="editScience">Science</label>
+                <input type="number" id="editScience" min="0" max="100">
+            </div>
+
+            <div class="input-group">
+                <label for="editEnglish">English</label>
+                <input type="number" id="editEnglish" min="0" max="100">
+            </div>
+        </div>
+
+        <div class="update-preview">
+            <span>Updated result</span>
+            <strong id="editResultPreview">0%</strong>
+            <span id="editGradePreview" class="grade-preview">Grade F</span>
+        </div>
+
+        <div class="modal-actions">
+            <button class="clear" onclick="closeUpdateModal()">Cancel</button>
+            <button class="primary-btn" onclick="saveStudentUpdate()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="script.js"></script>
 
 </body>
-
 </html>
